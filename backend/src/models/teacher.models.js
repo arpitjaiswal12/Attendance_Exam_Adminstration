@@ -1,6 +1,6 @@
 import mongoose, { Mongoose, Schema } from "mongoose";
 
-const studentSchema = new Schema(
+const teacherSchema = new Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -10,7 +10,7 @@ const studentSchema = new Schema(
       type: String,
       required: true,
     },
-    sbject: {
+    subject: {
       type: [
         {
           type: String,
@@ -26,4 +26,4 @@ const studentSchema = new Schema(
   { timestamps: true }
 );
 
-export const Student = mongoose.model("Student", studentSchema);
+export const Teacher = mongoose.model("Teacher", teacherSchema);
