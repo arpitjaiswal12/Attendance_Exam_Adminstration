@@ -15,6 +15,7 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
     username: {
       type: String,
@@ -64,8 +65,51 @@ const userSchema = new Schema(
       enum: ["Student", "Teacher", "Admin"],
       require: true,
     },
+    refreshToken: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next(); // field modify nhi hua to
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return bcrypt.compare(password, this.password);
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  //this token only refresh to generate acess token
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
+
+userSchema.methods.generateAccessToken = function () {
+  // jwt.sign() // this method generate token
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      username: this.username,
+      fullName: this.firstName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
 
 export const User = mongoose.model("User", userSchema);
