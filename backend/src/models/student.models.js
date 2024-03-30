@@ -21,6 +21,7 @@ const studentSchema = new Schema(
     enrolmentNumber: {
       type: String,
       required: true,
+      unique:true,
     },
     avatar: {
       type: String,
