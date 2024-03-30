@@ -6,10 +6,6 @@ const teacherSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    avatar: {
-      type: String,
-      required: true,
-    },
     subject: {
       type: [
         {

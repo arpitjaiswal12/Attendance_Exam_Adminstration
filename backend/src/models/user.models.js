@@ -1,4 +1,6 @@
 import mongoose, { Schema } from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema(
   {
@@ -64,6 +66,9 @@ const userSchema = new Schema(
       type: String,
       enum: ["Student", "Teacher", "Admin"],
       require: true,
+    },
+    avatar: {
+      type: String,
     },
     refreshToken: {
       type: String,
