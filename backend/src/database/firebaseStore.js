@@ -5,6 +5,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../utils/firebase.config.js";
+import fs from "fs";
 
 const storeImage = async (fileObject) => {
   return new Promise((resolve, reject) => {
@@ -28,8 +29,10 @@ const storeImage = async (fileObject) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100; // this will show the percentage of image is uploaded
         console.log(`Upload is ${progress.toFixed(2)}% done`);
+        fs.unlinkSync(fileObject.path);
       },
       (error) => {
+        fs.unlinkSync(fileObject.path);
         reject(error);
       },
       () => {
