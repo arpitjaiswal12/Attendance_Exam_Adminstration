@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.models.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
@@ -33,3 +34,16 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     throw new ApiError(401, error?.message || "Invalid access token");
   }
 });
+
+export const restrictTo = (roles = []) => {
+  return function (req, res, next) {
+    if (!req.user) {
+      return res.redirect("/login");
+    }
+    console.log("current user role!",req.user.role)
+    if (!roles.includes(req.user.role)) {
+      throw new ApiError(401, "user is UnAuthorized!");
+    }
+    return next();
+  };
+};

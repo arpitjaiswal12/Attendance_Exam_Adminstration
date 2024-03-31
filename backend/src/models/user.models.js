@@ -66,6 +66,7 @@ const userSchema = new Schema(
       type: String,
       enum: ["Student", "Teacher", "Admin"],
       require: true,
+      default: "Student",
     },
     avatar: {
       type: String,

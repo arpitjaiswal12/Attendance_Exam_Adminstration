@@ -1,8 +1,8 @@
 import { Router } from "express";
 
 import { upload } from "../middlewares/multer.middleware.js";
-import { loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { getUser, loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
+import { restrictTo, verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -20,5 +20,6 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 
 router.route("/logout").post(verifyJWT,logoutUser);
+// router.route("/getall").get(verifyJWT,restrictTo(["Admin","Teacher"]),getUser);  // authorization 
 
 export default router;  
