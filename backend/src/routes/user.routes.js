@@ -3,6 +3,7 @@ import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import {
   changePassword,
+  deleteUser,
   getUser,
   loginUser,
   logoutUser,
@@ -40,7 +41,10 @@ router.route("/update-avatar").put(
   ]),
   updateUserAvatar
 );
-router.route("/change-password").put(verifyJWT,changePassword)
+router.route("/change-password").put(verifyJWT, changePassword);
+router
+  .route("/delete/:userID")
+  .delete(verifyJWT, restrictTo(["Admin", "Teacher"]), deleteUser);
 // router.route("/getall").get(verifyJWT,restrictTo(["Admin","Teacher"]),getUser);  // authorization
 
 export default router;

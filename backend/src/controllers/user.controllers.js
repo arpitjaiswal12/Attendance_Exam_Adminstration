@@ -203,7 +203,6 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const changePassword = asyncHandler(async (req, res) => {
-
   const { oldPassword, newPassword } = req.body;
 
   const user = await User.findById(req.user?._id);
@@ -225,6 +224,22 @@ const changePassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password updated successfully !!")); // {} no data is sending
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const { userID } = req.params;
+  if (!userID) {
+    throw new ApiError(401, "User is not valid!");
+  }
+
+  const existUser = await User.findById(userID);
+  if (!existUser) {
+    throw new ApiError(401, "User is not found!");
+  }
+
+  await User.findByIdAndDelete(userID);
+
+  return res.json(new ApiResponse(200, "user deleted successfully!"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -232,5 +247,6 @@ export {
   getUser,
   updateUser,
   updateUserAvatar,
-  changePassword
+  changePassword,
+  deleteUser,
 };
