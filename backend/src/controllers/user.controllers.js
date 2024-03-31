@@ -202,4 +202,35 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
   );
 });
 
-export { registerUser, loginUser, logoutUser, getUser, updateUser,updateUserAvatar };
+const changePassword = asyncHandler(async (req, res) => {
+
+  const { oldPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user?._id);
+  if (!user) {
+    throw new ApiError(401, "User is not authenticated !!");
+  }
+
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword); //check user old password is correct
+
+  if (!isPasswordCorrect) {
+    throw new ApiError(400, "Inavlid old password");
+  }
+
+  user.password = newPassword; // user scema sa password change kra
+  await user.save({ validateBeforeSave: false });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password updated successfully !!")); // {} no data is sending
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUser,
+  updateUser,
+  updateUserAvatar,
+  changePassword
+};
