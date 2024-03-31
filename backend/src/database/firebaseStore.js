@@ -10,7 +10,7 @@ import fs from "fs";
 const storeImage = async (fileObject) => {
   return new Promise((resolve, reject) => {
     const storage = getStorage(app);
-    const fileName = new Date().getTime() + `files/${fileObject.originalname}`;
+    const fileName = new Date().getTime() + `${fileObject.originalname}`;
     const storageRef = ref(storage, fileName);
 
     // Create file metadata including the content type

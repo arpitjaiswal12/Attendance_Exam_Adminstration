@@ -56,7 +56,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar file is required");
   }
 
-  // now upload files to cloudinary
+  // now upload files to firebase
   const fileObject = await processUploadedFile(avatarLocalPath);
   // console.log("fileObject ", fileObject);
   const avatarUrl = await storeImage(fileObject); // this will take time to upload  // this will return response
@@ -163,4 +163,43 @@ const getUser = asyncHandler(async (req, res) => {
   return res.json(new ApiResponse(200, allUsers, "the users are fetched !"));
 });
 
-export { registerUser, loginUser, logoutUser, getUser };
+const updateUser = asyncHandler(async (req, res) => {
+  const updateData = req.body;
+  console.log(updateData);
+
+  const updatedUser = await User.findByIdAndUpdate(req.user?._id, updateData, {
+    new: true,
+  });
+
+  return res.json(
+    new ApiResponse(200, updatedUser, "user updated successfully !")
+  );
+});
+
+const updateUserAvatar = asyncHandler(async (req, res) => {
+  const avatarLocalPath = req.files?.avatar[0];
+  // console.log("req.file object ", avatarLocalPath);
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is required");
+  }
+
+  // now upload files to firebase
+  const fileObject = await processUploadedFile(avatarLocalPath);
+  // console.log("fileObject ", fileObject);
+  const avatarUrl = await storeImage(fileObject); // this will take time to upload  // this will return response
+
+  const updatedAvatar = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: { avatar: avatarUrl },
+    },
+    { new: true }
+  );
+
+  return res.json(
+    new ApiResponse(200, updatedAvatar, "Avatar updated successfully !")
+  );
+});
+
+export { registerUser, loginUser, logoutUser, getUser, updateUser,updateUserAvatar };
