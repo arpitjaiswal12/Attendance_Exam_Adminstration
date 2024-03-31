@@ -23,16 +23,17 @@ const storeImage = async (fileObject) => {
       fileObject.buffer,
       metadata
     );
+    // console.log("file buffer",fileObject.buffer)
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100; // this will show the percentage of image is uploaded
-        console.log(`Upload is ${progress.toFixed(2)}% done`);
-        fs.unlinkSync(fileObject.path);
+        console.log(`Upload is ${progress}% done`);
+        
       },
       (error) => {
-        fs.unlinkSync(fileObject.path);
+        // fs.unlinkSync(fileObject.path);
         reject(error);
       },
       () => {
@@ -41,6 +42,7 @@ const storeImage = async (fileObject) => {
         });
       }
     );
+    fs.unlinkSync(fileObject.path);
   });
 };
 

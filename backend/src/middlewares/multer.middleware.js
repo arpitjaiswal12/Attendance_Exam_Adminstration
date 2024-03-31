@@ -1,4 +1,23 @@
 import multer from "multer";
+import fs from "fs"
+
+export const processUploadedFile = async (file) => {
+  // console.log("5 process uppload file ", file)
+  return new Promise((resolve, reject) => {
+    fs.readFile(file.path, (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({
+          buffer: data,
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+          path:file.path,
+        });
+      }
+    });
+  });
+};
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

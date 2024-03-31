@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { storeImage } from "../database/firebaseStore.js";
+import { processUploadedFile } from "../middlewares/multer.middleware.js";
 
 // method to generate access and refresh tokens
 
@@ -49,14 +50,16 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   //check for file
   const avatarLocalPath = req.files?.avatar[0];
+  // console.log("req.file object ", avatarLocalPath);
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is required");
   }
 
   // now upload files to cloudinary
-
-  const avatarUrl = await storeImage(avatarLocalPath); // this will take time to upload  // this will return response
+  const fileObject = await processUploadedFile(avatarLocalPath);
+  // console.log("fileObject ", fileObject);
+  const avatarUrl = await storeImage(fileObject); // this will take time to upload  // this will return response
 
   userData.avatar = avatarUrl;
 
@@ -160,4 +163,4 @@ const getUser = asyncHandler(async (req, res) => {
   return res.json(new ApiResponse(200, allUsers, "the users are fetched !"));
 });
 
-export { registerUser, loginUser, logoutUser,getUser };
+export { registerUser, loginUser, logoutUser, getUser };
