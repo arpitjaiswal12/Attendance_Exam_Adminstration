@@ -126,4 +126,32 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerUser, loginUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  //geeting the current user
+  //update or clear the current user cookies so it get logged out
+  await User.findByIdAndUpdate(
+    req.user._id, //as user is login and update
+    {
+      $unset: {
+        refreshToken: 1, // this removes the field from document
+      },
+    },
+    {
+      new: true, //prevent the overall update of schema values rather only update refreshToken
+    }
+  );
+
+  const options = {
+    // means cookies can only be updated from server
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options) // clearing the cookies as user is logged out
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out"));
+});
+
+export { registerUser, loginUser,logoutUser };
