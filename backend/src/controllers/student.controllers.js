@@ -25,7 +25,7 @@ const updateStudent = asyncHandler(async (req, res) => {
   const updateData = req.body;
 
   const updatedStudent = await Student.findByIdAndUpdate(
-    req.user?._id,
+    { user: req.user?._id },
     updateData,
     { new: true }
   );
@@ -39,7 +39,6 @@ const updateStudent = asyncHandler(async (req, res) => {
 });
 
 const getStudent = asyncHandler(async (req, res) => {
-
   const student = await Student.find({ user: req.user?._id });
 
   const userData = await User.findById(req.user?._id);
@@ -48,7 +47,11 @@ const getStudent = asyncHandler(async (req, res) => {
     throw new ApiError(401, "student detail is not exist");
   }
   return res.json(
-    new ApiResponse(200, [{ student },{userData}], "student fetched successfully! ")
+    new ApiResponse(
+      200,
+      [{ student }, { userData }],
+      "student fetched successfully! "
+    )
   );
 });
 
