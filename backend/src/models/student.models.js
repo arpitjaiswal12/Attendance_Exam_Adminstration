@@ -14,16 +14,19 @@ const studentSchema = new Schema(
       type: String,
       required: true,
     },
+    year: {
+      type: Number,
+      required: true,
+    },
     semester: {
-      type: String,
+      type: Number,
       required: true,
     },
     enrolmentNumber: {
       type: String,
       required: true,
-      unique:true,
+      unique: true,
     },
-    
   },
   { timestamps: true }
 );
